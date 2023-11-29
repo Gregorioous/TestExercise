@@ -6,7 +6,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:gravity="top"
-    android:background="#000000"
     tools:context=".view.RegistrationFragment">
 
     <TextView
@@ -14,7 +13,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/signin"
         android:text="@string/sign_in"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:textSize="35sp"
         android:textStyle="bold"
         android:layout_margin="50dp"
@@ -23,49 +22,31 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/usernameInputLayout"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        app:endIconMode="clear_text"
-
-        app:errorEnabled="true">
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/usernameEdittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:background="#30ffffff"
-            android:drawableStart="@drawable/ic_baseline_person_outline_24"
-            android:drawablePadding="20dp"
-            android:freezesText="true"
             android:hint="@string/login"
-            android:padding="20dp"
-            android:textColor="@color/white"
-            android:textColorHint="@color/white" />
-
+            android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/passwordInputLayout"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        app:endIconMode="password_toggle"
-        app:errorEnabled="true">
+        android:layout_height="wrap_content"
+        app:passwordToggleEnabled="true"
+        android:layout_margin="20dp">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/passwordEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:background="#30ffffff"
-            android:drawableStart="@drawable/ic_baseline_info_24"
-            android:drawablePadding="20dp"
-            android:freezesText="true"
             android:hint="@string/password"
-            android:inputType="textPassword"
-            android:padding="20dp"
-            android:textColor="@color/white"
-            android:textColorHint="@color/white" />
 
+            android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <ProgressBar
@@ -79,9 +60,9 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/loginbtn"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
+        android:layout_margin="120dp"
         android:layout_gravity="center"
         android:backgroundTint="#068F83"
         android:text="@string/buttonLogin" />

@@ -1,13 +1,14 @@
 package com.example.testapplication.api.response
 
-import com.example.testexercise.model.Exception
+
+import com.example.testexercise.model.ResponsePayments
 import com.google.gson.annotations.SerializedName
 
-data class ResponseToken(
+data class ResponsePaymentsList(
     @SerializedName("response")
-    val response: Response?,
+    val response: List<ResponsePayments>?,
     @SerializedName("success")
     val success: String,
     @SerializedName("error")
-    val error: Exception?,
+    val error: Error?,
 )

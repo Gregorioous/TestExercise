@@ -1,21 +1,29 @@
 package com.example.testexercise.viewmodel
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
-import com.example.testexercise.api.AuthInterceptor
-import com.example.testexercise.repository.PaymentsRepository
-import com.example.testexercise.utills.BaseResponse
-import kotlinx.coroutines.Dispatchers
+import androidx.lifecycle.viewModelScope
+import com.example.testexercise.model.ResponsePayments
+import com.example.testexercise.repository.NetworkRepository
+import com.example.testexercise.utills.Resource
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class PaymentsViewModel(private val paymentsRepository: PaymentsRepository) : ViewModel() {
+class PaymentsViewModel @Inject constructor(
+    private val networkRepository: NetworkRepository
+) : ViewModel() {
 
-    fun getPaymentsList() = liveData(Dispatchers.IO) {
-        emit(BaseResponse.Loading)
+    val responsePayments = MutableLiveData<Resource<ResponsePayments>>()
 
-        emit(paymentsRepository.getPaymentsList())
-    }
-
-    fun setNullToToken() {
-        AuthInterceptor.token = null
+    fun getUsersPayments(usersToken: String) {
+        viewModelScope.launch {
+            try {
+                responsePayments.postValue(Resource.Loading())
+                val paymentsList = networkRepository.getPayments(usersToken)
+                //     responsePayments.postValue(Resource.Success(paymentsList))
+            } catch (e: Exception) {
+                responsePayments.postValue(Resource.Error(e.message!!))
+            }
+        }
     }
 }

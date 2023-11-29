@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">TestExercise</string>
+    <string name="enter_your_name">Enter your login</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="sign_in">Sign in</string>
+    <string name="buttonLogin">LOGIN</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="login_hint">Login</string>
+    <string name="password_hint">Password</string>
+    <string name="btn_login_text">Login</string>
+    <string name="error_something_gone_wrong">Something gone wrong</string>
+    <string name="error_dialog_ok">OK</string>
+    <string name="error_login_failed">Login or password is invalid</string>
+    <string name="payments_title">Payments</string>
+    <string name="btn_logout_text">Logout</string>
+    <string name="payments_detail_created_title">Date</string>
+    <string name="payments_detail_amount_title">Amount</string>
+    <string name="payments_detail_currency_title">Currency</string>
+    <string name="payments_detail_description_title">Description</string>
+</resources>

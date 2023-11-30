@@ -45,16 +45,16 @@ class RegistrationFragment : Fragment() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        val userText = binding.usernameEdittext.text.toString()
-        val passwordText = binding.passwordEditText.text.toString()
+        val userText = binding.usernameEdittext.text
+        val passwordText = binding.passwordEditText.text
         outState.putCharSequence(SAVELOGIN, userText)
         outState.putCharSequence(SAVEPASSWORD, passwordText)
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
-        val userText = savedInstanceState?.getCharSequence("savedText")
-        val passwordText = savedInstanceState?.getCharSequence("savedText")
+        val userText = savedInstanceState?.getCharSequence(SAVELOGIN)
+        val passwordText = savedInstanceState?.getCharSequence(SAVEPASSWORD)
         binding.usernameEdittext.setText(userText)
         binding.passwordEditText.setText(passwordText)
     }

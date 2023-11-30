@@ -33,6 +33,8 @@
         android:layout_width="190dp"
         android:layout_height="50dp"
         android:text="TextView"
+        android:textSize="35sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/recyclerView"
         app:layout_constraintEnd_toStartOf="@+id/logoutButton"
         app:layout_constraintStart_toStartOf="parent"

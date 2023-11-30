@@ -1,4 +1,4 @@
-package com.example.testexercise.api
+package com.example.testexercise.data.api
 
 import okhttp3.Interceptor
 import okhttp3.Response

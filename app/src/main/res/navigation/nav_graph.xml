@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:startDestination="@id/registrationFragment"
+    android:id="@+id/navigateGraph">
+    <fragment
+        android:id="@+id/registrationFragment"
+        android:name="com.example.testexercise.view.RegistrationFragment"
+        android:label="fragment_autorization"
+        tools:layout="@layout/fragment_autorization">
+        <action
+            android:id="@+id/action_registrationFragment2_to_listPaymentFragment2"
+            app:destination="@id/listPaymentFragment" />
+        <argument
+            android:name="userName"
+            app:argType="string" />
+        <argument
+            android:name="userToken"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/listPaymentFragment"
+        android:name="com.example.testexercise.view.ListPaymentFragment"
+        android:label="fragment_list_payment"
+        tools:layout="@layout/fragment_list_payment">
+        <action
+            android:id="@+id/action_listPaymentFragment2_to_registrationFragment2"
+            app:destination="@id/registrationFragment" />
+    </fragment>
+</navigation>

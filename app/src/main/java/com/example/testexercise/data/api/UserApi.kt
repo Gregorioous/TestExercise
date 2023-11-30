@@ -1,4 +1,4 @@
-package com.example.testexercise.api
+package com.example.testexercise.data.api
 
 import com.example.testapplication.api.request.RequestToken
 import com.example.testapplication.api.response.ResponsePaymentsList

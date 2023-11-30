@@ -7,68 +7,57 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.example.testapplication.api.response.ResponseToken
 import com.example.testexercise.R
-import com.example.testexercise.api.AuthInterceptor.Companion.token
 import com.example.testexercise.databinding.FragmentAutorizationBinding
-import com.example.testexercise.utills.BaseResponse
 import com.example.testexercise.utills.showLoginFailedDialog
 import com.example.testexercise.viewmodel.RegistrationViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class RegistrationFragment : Fragment() {
     private var _binding: FragmentAutorizationBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: RegistrationViewModel by viewModel()
+    private val viewModel by viewModels<RegistrationViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentAutorizationBinding.inflate(inflater, container, false)
-
-        binding.loginbtn.setOnClickListener {
-            doLogin()
-
-        }
-
-
         return binding.root
     }
 
-    private fun createRequestToken(login: String, password: String) {
-        viewModel.getToken(login, password).observe(viewLifecycleOwner) {
-            when (it) {
-                is BaseResponse.Loading -> {
-                    showLoading()
-                }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.loginbtn.setOnClickListener { doLogin() }
 
-                is BaseResponse.Success -> {
-                    stopLoading()
-                    processLogin(it.response)
-                }
-
-                is BaseResponse.Failed -> {
-                    context?.let { it1 -> processError(it1, it.error) }
-                }
-
-                else -> {
-                    stopLoading()
+        viewModel.loginResponseToken.observe(viewLifecycleOwner) {
+            if (it.data != null) {
+                it.data.let { responseToken ->
+                    responceTokenObserverAction(responseToken)
                 }
             }
         }
     }
 
-    private fun navigateToPayment() {
-        viewModel.setToken(token)
-        val fragment = ListPaymentFragment()
-        fragmentManager?.beginTransaction()
-            ?.replace(R.id.main_container, fragment)
-            ?.addToBackStack(null)
-            ?.commit()
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        val userText = binding.usernameEdittext.text.toString()
+        val passwordText = binding.passwordEditText.text.toString()
+        outState.putCharSequence(SAVELOGIN, userText)
+        outState.putCharSequence(SAVEPASSWORD, passwordText)
     }
 
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        val userText = savedInstanceState?.getCharSequence("savedText")
+        val passwordText = savedInstanceState?.getCharSequence("savedText")
+        binding.usernameEdittext.setText(userText)
+        binding.passwordEditText.setText(passwordText)
+    }
 
     fun doLogin() {
         val login = binding.usernameEdittext.text.toString()
@@ -83,7 +72,26 @@ class RegistrationFragment : Fragment() {
             binding.passwordInputLayout.error = "Пароль должен содержать не менее 5 символов"
             return
         }
-        createRequestToken(login = login, password = pwd)
+        viewModel.login(userLogin = login, userPassword = pwd)
+        showLoading()
+    }
+
+    private fun responceTokenObserverAction(responseToken: ResponseToken) {
+        if (responseToken.success == "true") {
+            val userName = binding.usernameEdittext.text.toString().trim()
+            val userToken = responseToken.response?.token ?: ""
+
+            val bundle = Bundle().apply {
+                putString("userName", userName)
+                putString("userToken", userToken)
+            }
+            findNavController().navigate(R.id.listPaymentFragment, bundle)
+        } else {
+            processError(requireContext(), "Error:\n ${responseToken.error?.error_msg}")
+            binding.usernameEdittext.text?.clear()
+            binding.passwordEditText.text?.clear()
+            stopLoading()
+        }
     }
 
 
@@ -97,7 +105,7 @@ class RegistrationFragment : Fragment() {
 
     fun processLogin(data: ResponseToken) {
         showToast("Success:" + data.success)
-        navigateToPayment()
+
     }
 
     fun processError(
@@ -113,6 +121,11 @@ class RegistrationFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        private const val SAVELOGIN = "savedLoginText"
+        private const val SAVEPASSWORD = "savedPasswordText"
     }
 
 }

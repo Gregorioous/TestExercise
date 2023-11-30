@@ -1,25 +1,26 @@
 package com.example.testexercise.view
 
-import android.content.Context
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
-import com.example.testapplication.api.response.ResponsePaymentsList
-import com.example.testexercise.R
-import com.example.testexercise.databinding.FragmentListPaymentBinding
-import com.example.testexercise.utills.BaseResponse
-import com.example.testexercise.utills.PaymentAdapter
-import com.example.testexercise.utills.showLoginFailedDialog
-import com.example.testexercise.viewmodel.PaymentsViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
+ import android.os.Bundle
+ import android.view.LayoutInflater
+ import android.view.View
+ import android.view.ViewGroup
+ import androidx.fragment.app.Fragment
+ import androidx.fragment.app.viewModels
+ import androidx.navigation.fragment.findNavController
+ import androidx.recyclerview.widget.LinearLayoutManager
+ import com.example.testapplication.api.response.ResponsePaymentsList
+ import com.example.testexercise.R
+ import com.example.testexercise.data.api.model.ResponsePayments
+ import com.example.testexercise.databinding.FragmentListPaymentBinding
+ import com.example.testexercise.utills.PaymentAdapter
+ import com.example.testexercise.viewmodel.PaymentsViewModel
+ import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ListPaymentFragment : Fragment() {
 
-    private val paymentsViewModel: PaymentsViewModel by viewModel()
-    private var adapter = PaymentAdapter()
+    private val paymentsViewModel by viewModels<PaymentsViewModel>()
+    private lateinit var adapter: PaymentAdapter
     private var _binding: FragmentListPaymentBinding? = null
     private val binding get() = _binding!!
 
@@ -35,39 +36,47 @@ class ListPaymentFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getPaymentsList()
-        binding.btnLogout.setOnClickListener { logOut() }
-    }
 
-    private fun logOut() {
-        paymentsViewModel.setNullToToken()
-        val fragmentTransaction: FragmentTransaction = childFragmentManager.beginTransaction()
-        val authorizationFragment: Fragment = RegistrationFragment()
-        fragmentTransaction.replace(R.id.main_container, authorizationFragment)
-        fragmentTransaction.addToBackStack(null)
-        fragmentTransaction.commit()
-    }
+        navigation()
+        Args()
 
-    private fun getPaymentsList() {
-        paymentsViewModel.getPaymentsList().observe(viewLifecycleOwner) { response ->
-            when (response) {
-                is BaseResponse.Loading -> binding.btnLogout.isEnabled = false
-                is BaseResponse.Failed -> context?.let { processError(it, response.error) }
-                is BaseResponse.Success -> createRecyclerView(response.response.responsePayments)
+        paymentsViewModel.responsePayments.observe(viewLifecycleOwner) {
+            if (it.data != null) {
+                it.data.let { responsePayments ->
+                    responsePaymentsObserverAction(responsePayments)
+                }
             }
-            binding.btnLogout.isEnabled = true
         }
     }
 
-    private fun createRecyclerView(paymentsList: List<ResponsePaymentsList.ResponsePayments>) {
-        adapter.setPayments(paymentsList)
-        binding.recyclerView.adapter = adapter
+    private fun navigation() {
+        binding.logoutButton.setOnClickListener {
+            findNavController().navigate(R.id.action_listPaymentFragment2_to_registrationFragment2)
+        }
     }
 
-    fun processError(
-        context: Context, errorMassage: String
-    ) {
-        showLoginFailedDialog(context, errorMassage)
+    private fun responsePaymentsObserverAction(responsePayments: ResponsePaymentsList) =
+        with(binding) {
+            if (responsePayments.response != null) {
+                adapter(responsePayments.response)
+            }
+        }
+
+    private fun Args() {
+        val userName = arguments?.getString("userName", "")
+        val userToken = arguments?.getString("userToken", "")
+        binding.tvLayoutTitle.text = userName
+        userToken?.let { paymentsViewModel.getUsersPayments(it) }
+    }
+
+    private fun adapter(payments: List<ResponsePayments>) {
+        adapter = PaymentAdapter()
+        adapter.payments = payments
+        val layoutManager = LinearLayoutManager(this.context)
+        binding.apply {
+            binding.recyclerView.layoutManager = layoutManager
+            binding.recyclerView.adapter = adapter
+        }
     }
 
     override fun onDestroyView() {

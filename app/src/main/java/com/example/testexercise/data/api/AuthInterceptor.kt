@@ -1,4 +1,4 @@
-package com.example.testexercise.api
+package com.example.testexercise.data.api
 
 import com.example.testexercise.utills.PreferenseManager
 import okhttp3.Interceptor

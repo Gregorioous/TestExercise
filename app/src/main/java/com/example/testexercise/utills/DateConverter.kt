@@ -6,10 +6,10 @@ import java.util.Locale
 
 class DateConverter {
     companion object {
-        fun convertTimestampToDate(timestamp: Long): String {
+        fun convertTimestampToDate(timestamp: Long?): String {
             try {
                 val sdf = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
-                val netDate = Date(timestamp * 1000)
+                val netDate = Date(timestamp?.times(1000) ?: 0)
                 return sdf.format(netDate)
             } catch (e: Exception) {
                 return "unknown date"

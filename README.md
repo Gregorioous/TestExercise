@@ -1,2 +1,2 @@
 # TestExercise
-viewmodel,livedata,espresso,coroutines,retrofit,gson,okhttp3:logging-interceptor,hilt
+viewmodel,livedata,espresso(небольшой ui тест написал),coroutines,retrofit,gson,okhttp3:logging-interceptor,hilt
